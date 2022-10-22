@@ -50,6 +50,18 @@ class ReviewWriteViewController: UIViewController {
         ])
     }
     
+    func alert(message:String){
+        let alert = UIAlertController(title: "알림", message: message, preferredStyle: .alert)
+        let action = UIAlertAction(title: "확인", style: .cancel){_ in
+            if message == "리뷰가 등록되었습니다"{
+                self.navigationController?.popViewController(animated: true)
+            }
+        }
+        alert.addAction(action)
+        self.present(alert, animated: true)
+        
+    }
+    
     func check(pw:String) -> Bool{
         guard 6...20 ~= pw.count else { return false}
         let capitals = (UInt8(ascii: "A")...UInt8(ascii: "Z")).reduce(""){$0 + String(Character(UnicodeScalar($1)))}
@@ -103,13 +115,14 @@ extension ReviewWriteViewController : ReviewWriteViewProtocol{
                 if let data : Data = "1".data(using: .utf8){
                     do{
                         try data.write(to: path)
-                        dismiss(animated: true)
                     }catch{
                         print(error.localizedDescription)
                     }
                 }
             }
-            
+            alert(message: "리뷰가 등록되었습니다")
+        }else{
+            alert(message: "비밀번호는 소문자, 대문자, 특수문자(!,@,#,$)를 한 가지씩 포함하는 6~20길이의 문자여야 합니다")
         }
     }
     

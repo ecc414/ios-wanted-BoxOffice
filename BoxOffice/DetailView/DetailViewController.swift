@@ -36,11 +36,16 @@ class DetailViewController : UIViewController{
         }catch{
             print(error.localizedDescription)
         }
-        loadReviews()
+      //  loadReviews()
         setInfo()
         addSubViews()
         setConstraints()
         detailView.delegate = self
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        loadReviews()
     }
  
     func loadReviews(){
