@@ -176,8 +176,8 @@ class ReviewWriteView : UIView{
     }
  
     @objc func drag(_ sender:UIPanGestureRecognizer){
-        let a = sender.location(in: starStackH)
-        ratingStarGesture(xLocation: a.x)
+        let location = sender.location(in: starStackH)
+        ratingStarGesture(xLocation: location.x)
     }
     
     func makeProfileViewCircle(){
