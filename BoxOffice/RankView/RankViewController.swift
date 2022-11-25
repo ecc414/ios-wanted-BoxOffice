@@ -9,12 +9,23 @@ import UIKit
 
 class RankViewController: UIViewController {
     
+//    let refreshControl = UIRefreshControl()
+//
+//    @objc func refresh(){
+//        fetch()
+//        refreshControl.endRefreshing()
+//    }
+    
     let rankView = RankView()
     
     var detailInfo : [MovieInfo] = []
         
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+//        refreshControl.addTarget(self, action: #selector(refresh), for: .valueChanged)
+//        rankView.tableView.addSubview(refreshControl)
+        
         fetch()
         makeNavigationBarClear()
         addSubViews()
@@ -35,6 +46,9 @@ class RankViewController: UIViewController {
                 rankView.range = response.boxOfficeResult.showRange
                 rankView.tableView.reloadData()
                 let boxOfficeInfoArr = response.boxOfficeResult.dailyBoxOfficeList
+                if rankView.movie.count == 10{
+                    return
+                }
                 for boxOfficeInfo in boxOfficeInfoArr{
                     let detailInfo = try await MovieService().getDetailMovieInfo(movieCd: boxOfficeInfo.movieCd).movieInfoResult.movieInfo
                     let englishTitle = detailInfo.movieNmEn
@@ -46,7 +60,11 @@ class RankViewController: UIViewController {
                     }catch{
                         print(error.localizedDescription)
                     }
-                    rankView.movie.append(Movie(boxOfficeInfo: boxOfficeInfo, detailInfo: detailInfo, poster: poster ?? UIImage(named: "NoImage")!, rating: ratings))
+                    let movie = Movie(boxOfficeInfo: boxOfficeInfo, detailInfo: detailInfo, poster: poster ?? UIImage(named: "NoImage")!, rating: ratings)
+                    if rankView.movie.contains(where: {$0.boxOfficeInfo.movieNm == movie.boxOfficeInfo.movieNm}) {
+                        continue
+                    }
+                    rankView.movie.append(movie)
                     rankView.tableView.beginUpdates()
                     rankView.tableView.insertRows(at: [IndexPath(row: rankView.movie.count - 1, section: 0)], with: .automatic)
                     rankView.tableView.endUpdates()
@@ -78,5 +96,9 @@ extension RankViewController : RankViewProtocol{
         let vc = DetailViewController()
         vc.movie = movie
         self.navigationController?.pushViewController(vc, animated: true)
+    }
+    func refresh(){
+        print("refresh")
+        fetch()
     }
 }

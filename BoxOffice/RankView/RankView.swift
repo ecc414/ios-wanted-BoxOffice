@@ -9,6 +9,7 @@ import UIKit
 
 protocol RankViewProtocol{
     func presentDetailView(movie:Movie)
+    func refresh()
 }
 
 class RankView : UIView {
@@ -91,5 +92,20 @@ extension RankView : UITableViewDataSource{
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
         70
     }
-    
+    func scrollViewWillBeginDecelerating(_ scrollView: UIScrollView) {
+        let currentOffset = scrollView.contentOffset.y
+        let maximumOffset = scrollView.contentSize.height - scrollView.frame.size.height
+        if maximumOffset < currentOffset {
+            delegate?.refresh()
+            let spinner = UIActivityIndicatorView(style: .medium)
+            spinner.color = UIColor.darkGray
+            spinner.hidesWhenStopped = true
+            spinner.frame = CGRect(x: 0, y: 0, width: UIScreen.main.bounds.size.width, height: 60)
+            tableView.tableFooterView = spinner
+            spinner.startAnimating()
+            DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+                self.tableView.tableFooterView = nil
+            }
+        }
+    }
 }

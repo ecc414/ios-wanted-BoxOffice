@@ -26,8 +26,8 @@ class MovieService {
         guard let url = urlTemp else { throw NetworkError.badURL }
         let (data,response) = try await URLSession.shared.data(from: url)
         guard let statusCode = (response as? HTTPURLResponse)?.statusCode else { throw NetworkError.badURL }
-        let successRange = 200..<300
-        guard successRange ~= statusCode else {throw NetworkError.badURL}
+//        let successRange = 200..<300
+//        guard successRange ~= statusCode else {throw NetworkError.badURL}
         let result = try JSONDecoder().decode(BoxOfficeResponse.self, from: data)
         return result
     }
@@ -37,8 +37,8 @@ class MovieService {
         guard let url = urlTemp else { throw NetworkError.badURL}
         let (data,response) = try await URLSession.shared.data(from: url)
         guard let statusCode = (response as? HTTPURLResponse)?.statusCode else { throw NetworkError.badURL}
-        let successRange = 200..<300
-        guard successRange ~= statusCode else { throw NetworkError.badURL}
+//        let successRange = 200..<300
+//        guard successRange ~= statusCode else { throw NetworkError.badURL}
         let result = try JSONDecoder().decode(MovieInfoResponse.self, from: data)
         return result
     }
@@ -48,8 +48,8 @@ class MovieService {
         guard let url = urlTemp else { throw NetworkError.badURL}
         let (data,response) = try await URLSession.shared.data(from: url)
         guard let statusCode = (response as? HTTPURLResponse)?.statusCode else { throw NetworkError.badURL}
-        let successRange = 200..<300
-        guard successRange ~= statusCode else { throw NetworkError.badURL}
+//        let successRange = 200..<300
+//        guard successRange ~= statusCode else { throw NetworkError.badURL}
         let imageURL = try JSONDecoder().decode(MovieInfoUsingOMDB.self, from: data)
         let ratings = imageURL.Ratings
         guard let imgURL = URL(string: imageURL.Poster) else { throw NetworkError.badURL}
