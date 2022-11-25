@@ -15,6 +15,7 @@ extension NSLayoutConstraint {
 
 extension String{
     func extractYear() -> Self{
+        guard self.count > 3 else { return self}
         let idx = index(startIndex, offsetBy: 3)
         return String(self[...idx])
     }
