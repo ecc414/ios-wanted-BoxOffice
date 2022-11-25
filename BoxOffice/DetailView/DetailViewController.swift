@@ -36,41 +36,41 @@ class DetailViewController : UIViewController{
         }catch{
             print(error.localizedDescription)
         }
-      //  loadReviews()
         setInfo()
         addSubViews()
         setConstraints()
         detailView.delegate = self
     }
     
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
         loadReviews()
+        print("detailView loaded")
     }
- 
+
     func loadReviews(){
-            for content in contents{
-                let filePath = "gs://boxoffice-18825.appspot.com/" + content
-                let storageReference = storage.reference(forURL: filePath)
-                let megaByte = Int64(1 * 1024 * 1024)
-                storageReference.getData(maxSize: megaByte) { data, error in
-                    do{
-                        guard let data = data else { return }
-                        let reviewData = try JSONDecoder().decode(ReviewModel.self, from: data)
-                        self.detailView.reviews.append(reviewData)
-                    }catch{
-                        print(error.localizedDescription)
+        detailView.reviews.removeAll()
+        for content in contents{
+            let url = "gs://boxoffice-18825.appspot.com/" + content
+            let ref = storageRef.storage.reference(forURL: url)
+            ref.getData(maxSize: 1 * 1024 * 1024) { data, error in
+                if let error = error{
+                    print("error \(error.localizedDescription)")
+                }else{
+                    print("success")
+                    if let data = data{
+                        do{
+                            let reviewData = try JSONDecoder().decode(ReviewModel.self, from: data)
+                            self.detailView.reviews.append(reviewData)
+                            print(reviewData)
+                            self.detailView.tableView.reloadData()
+                        }catch{
+                            print("decodeError")
+                        }
                     }
                 }
-                let imagefilePath = "gs://boxoffice-18825.appspot.com/" + content + "Image"
-                let imagestorageReference = storage.reference(forURL: imagefilePath)
-                imagestorageReference.getData(maxSize: megaByte) { data, error in
-                    guard let data = data else { return }
-                    let image = UIImage(data: data)
-                    self.detailView.profiles.append(image ?? UIImage(named: "Profile")!)
-                    self.detailView.tableView.reloadData()
-                }
             }
+        }
     }
 
     

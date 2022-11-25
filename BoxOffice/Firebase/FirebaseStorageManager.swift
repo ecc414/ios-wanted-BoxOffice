@@ -28,7 +28,7 @@ class FirebaseStorageManager {
                 print(error.localizedDescription)
                 return
             }else{
-                print("성공")
+                print("이미지업로드성공")
             }
         }
     }
@@ -38,45 +38,38 @@ class FirebaseStorageManager {
             let data = try JSONEncoder().encode(review)
          //   let filePath = UUID().uuidString
             storage.reference().child(filePath).putData(data)
+            print("데이터업로드성공")
         }catch{
             print(error.localizedDescription)
         }
     }
-    func downloadImage(urlString:String,imageView:UIImageView){
+    func downloadImage(urlString: String) async -> UIImage?{
         let storageReference = storage.reference(forURL: urlString)
         let megaByte = Int64(1 * 1024 * 1024)
+        var image: UIImage?
         storageReference.getData(maxSize: megaByte) { data, error in
             guard let imageData = data else { return }
-            imageView.image = UIImage(data: imageData)
+            //imageView.image = UIImage(data: imageData)
+            image = UIImage(data: imageData)
+            print("이미지다운로드성공")
         }
+        return image
     }
-    
-//    func downloadImage(urlString:String) -> UIImage?{
+
+//    func download(urlString:String) async throws -> ReviewModel?{
 //        let storageReference = storage.reference(forURL: urlString)
-//        var image : UIImage?
+//        var review : ReviewModel?
 //        let megaByte = Int64(1 * 1024 * 1024)
 //        storageReference.getData(maxSize: megaByte) { data, error in
-//            guard let imageData = data else { return }
-//            image = UIImage(data: imageData)
+//            guard let data = data, error == nil else {
+//                return }
+//                let reviewData = try JSONDecoder().decode(ReviewModel.self, from: data)
+//                review = reviewData
+//                print("리뷰다운로드성공")
 //        }
-//        return image
+//        print("review is \(review)")
+//        return review
 //    }
-    
-    func download(urlString:String){
-        let storageReference = storage.reference(forURL: urlString)
-        var review : ReviewModel?
-        let megaByte = Int64(1 * 1024 * 1024)
-        storageReference.getData(maxSize: megaByte) { data, error in
-            guard let data = data, error == nil else {
-                return }
-            do{
-                let reviewData = try JSONDecoder().decode(ReviewModel.self, from: data)
-                review = reviewData
-            }catch{
-                print(error.localizedDescription)
-            }
-        }
-    }
     
     func delete(){
         let deleteRef = storageRef.child("password")
@@ -84,7 +77,7 @@ class FirebaseStorageManager {
             if let error = error{
                 print(error.localizedDescription)
             }else{
-                print("성공")
+                print("삭제성공")
             }
         }
     }

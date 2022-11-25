@@ -235,9 +235,10 @@ extension DetailView : UITableViewDataSource {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard let cell = tableView.dequeueReusableCell(withIdentifier: CustomReviewCell.id, for: indexPath) as? CustomReviewCell else { return UITableViewCell()}
         let review = reviews[indexPath.row]
-        if profiles.count > indexPath.row{
-            cell.profileView.image = profiles[indexPath.row]
-        }
+//        if profiles.count > indexPath.row{
+//            cell.profileView.image = profiles[indexPath.row]
+//        }
+        cell.profileView.image = UIImage(named: "Profile")!
         cell.nickNameLabel.text = review.id
         cell.reviewLabel.text = review.comment
         return cell
