@@ -56,6 +56,7 @@ class RankView : UIView {
         tableView.rowHeight = height
         tableView.separatorStyle = .none
         tableView.backgroundColor = .systemBackground
+        tableView.delaysContentTouches = false
     }
     
 }
