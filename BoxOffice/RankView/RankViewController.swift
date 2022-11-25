@@ -8,29 +8,20 @@
 import UIKit
 
 class RankViewController: UIViewController {
-    
-//    let refreshControl = UIRefreshControl()
-//
-//    @objc func refresh(){
-//        fetch()
-//        refreshControl.endRefreshing()
-//    }
-    
+ 
     let rankView = RankView()
     
     var detailInfo : [MovieInfo] = []
         
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-//        refreshControl.addTarget(self, action: #selector(refresh), for: .valueChanged)
-//        rankView.tableView.addSubview(refreshControl)
-        
         fetch()
         makeNavigationBarClear()
-        addSubViews()
-        setConstraints()
         rankView.delegate = self
+    }
+    
+    override func loadView() {
+        self.view = rankView
     }
     
     func makeNavigationBarClear(){
@@ -73,20 +64,6 @@ class RankViewController: UIViewController {
                 print(error.localizedDescription)
             }
         }
-    }
-
-    func addSubViews(){
-        view.addSubview(rankView)
-        rankView.translatesAutoresizingMaskIntoConstraints = false
-    }
-    
-    func setConstraints(){
-        NSLayoutConstraint.activate([
-            rankView.topAnchor.constraint(equalTo: self.view.topAnchor),
-            rankView.bottomAnchor.constraint(equalTo: self.view.bottomAnchor),
-            rankView.leadingAnchor.constraint(equalTo: self.view.leadingAnchor),
-            rankView.trailingAnchor.constraint(equalTo: self.view.trailingAnchor)
-        ])
     }
 
 }

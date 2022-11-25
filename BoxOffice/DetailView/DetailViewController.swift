@@ -37,8 +37,6 @@ class DetailViewController : UIViewController{
             print(error.localizedDescription)
         }
         setInfo()
-        addSubViews()
-        setConstraints()
         detailView.delegate = self
     }
     
@@ -78,19 +76,10 @@ class DetailViewController : UIViewController{
         detailView.setInfo(movie: movie!)
     }
     
-    func addSubViews(){
-        view.addSubview(detailView)
-        detailView.translatesAutoresizingMaskIntoConstraints = false
+    override func loadView() {
+        self.view = detailView
     }
-    
-    func setConstraints(){
-        NSLayoutConstraint.activate([
-            detailView.topAnchor.constraint(equalTo: self.view.topAnchor),
-            detailView.bottomAnchor.constraint(equalTo: self.view.bottomAnchor),
-            detailView.leadingAnchor.constraint(equalTo: self.view.leadingAnchor),
-            detailView.trailingAnchor.constraint(equalTo: self.view.trailingAnchor)
-        ])
-    }
+
 }
 
 extension DetailViewController : DetailViewProtocol{
