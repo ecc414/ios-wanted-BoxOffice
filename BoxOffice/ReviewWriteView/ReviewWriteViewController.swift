@@ -62,48 +62,35 @@ class ReviewWriteViewController: UIViewController {
         
     }
     
-    func check(pw:String) -> Bool{
+    func check(with pw: String) -> Bool{
         guard 6...20 ~= pw.count else { return false}
-        let capitals = (UInt8(ascii: "A")...UInt8(ascii: "Z")).reduce(""){$0 + String(Character(UnicodeScalar($1)))}
-        var capitalOk = false
-        let smallCase = (UInt8(ascii: "a")...UInt8(ascii: "z")).reduce(""){$0 + String(Character(UnicodeScalar($1)))}
-        var smallCaseOk = false
-        let numbers = (UInt8(ascii: "0")...UInt8(ascii: "9")).reduce(""){$0 + String(Character(UnicodeScalar($1)))}
-        var numbersOk = false
-        let special = "!@#$"
-        var specialOk = false
-        for char in pw{
-            if !capitalOk{
-                if capitals.contains(char){
-                    capitalOk = true
-                }
+        let length = pw.count
+        let range = NSRange(location: 0, length: length)
+        let smallPattern = "[a-z]"
+        let numberPattern = "[\\d]"
+        let specialPattern = "[!@#$]"
+        do{
+            let regexOfSmall = try NSRegularExpression(pattern: smallPattern)
+            let resultOfSmall = regexOfSmall.numberOfMatches(in: pw, range: range)
+
+            let regexOfNumber = try NSRegularExpression(pattern: numberPattern)
+            let resultOfNumber = regexOfNumber.numberOfMatches(in: pw, range: range)
+
+            let regexOfSpecial = try NSRegularExpression(pattern: specialPattern)
+            let resultOfSpecial = regexOfSpecial.numberOfMatches(in: pw, range: range)
+            if resultOfSmall < 1 || resultOfNumber < 1 || resultOfSpecial < 1{
+                return false
             }
-            if !smallCaseOk{
-                if smallCase.contains(char){
-                    smallCaseOk = true
-                }
-            }
-            if !numbersOk{
-                if numbers.contains(char){
-                    numbersOk = true
-                }
-            }
-            if !specialOk{
-                if special.contains(char){
-                    specialOk = true
-                }
-            }
-            if capitalOk && smallCaseOk && numbersOk && specialOk{
-                return true
-            }
+        }catch{
+            print(error.localizedDescription)
         }
-        return false
+        return true
     }
 }
 
 extension ReviewWriteViewController : ReviewWriteViewProtocol{
     func submit() {
-        if let pw = reviewWriteView.passwordTextField.text, check(pw: pw){
+        if let pw = reviewWriteView.passwordTextField.text, check(with: pw){
             let filePath = UUID().uuidString + (movieTitle?.makeItFitToURL() ?? "movie")
             FirebaseStorageManager.shared.uploadImage(image: reviewWriteView.profileView.image!, filePath: filePath)
             let id = reviewWriteView.nickNameTextField.text ?? ""
